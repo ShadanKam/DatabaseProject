@@ -1,0 +1,321 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2511
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28300\viewh14380\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 package restaurant;\
+\
+import java.sql.*;\
+import java.awt.*;\
+import javax.swing.*;\
+import java.awt.FlowLayout;\
+import java.awt.event.*;\
+\
+public class Restaurant \{\
+\
+    public static void main(String[] args) \{\
+\
+        interfacee frame = new interfacee();\
+        frame.setTitle("waiter interface");\
+        frame.setLocationRelativeTo(null);\
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\
+        frame.setSize(650, 300);\
+        frame.setVisible(true);\
+\
+    \}\
+\}\
+\
+class interfacee extends JFrame implements ActionListener \{\
+\
+    private static final String username = "root";\
+    private static String password = "root1234";// load JDBC-ODBC driver\
+    private static String url = "jdbc:mysql://localhost:3306/Restaurant";\
+    public static String a, b;\
+\
+    public interfacee() \{\
+        try \{\
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();\
+        \} catch (ClassNotFoundException ex) \{\
+            System.out.println("Error: unable to load driver class!");\
+            System.exit(1);\
+        \} catch (IllegalAccessException ex) \{\
+            System.out.println("Error: access problem while loading!");\
+            System.exit(2);\
+        \} catch (InstantiationException ex) \{\
+            System.out.println("Error: unable to instantiate driver!");\
+            System.exit(3);\
+        \}\
+\
+        Connection conn = null;\
+        Statement stmt = null;\
+        ResultSet rs = null;\
+        try \{\
+            conn = DriverManager.getConnection(url, username, password);\
+            System.out.println("connected!");\
+            stmt = conn.createStatement();\
+\
+            setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));\
+            JPanel panel1 = new JPanel();\
+            JLabel label1 = new JLabel("coustomer phone:");\
+            JTextField name = new JTextField(10);\
+            panel1.add(label1, BorderLayout.NORTH);\
+            panel1.add(name, BorderLayout.NORTH);\
+            name.addActionListener(new ActionListener() \{\
+                @Override\
+                public void actionPerformed(ActionEvent e) \{\
+                    a = name.getText();\
+                \}\
+            \});\
+\
+            JLabel label2 = new JLabel("coustomer name:");\
+            JTextField phone = new JTextField(10);\
+            panel1.add(label2, BorderLayout.NORTH);\
+            panel1.add(phone, BorderLayout.NORTH);\
+\
+            JButton add = new JButton("add custumer");\
+            panel1.add(add, BorderLayout.CENTER);\
+            add(panel1);\
+\
+            JPanel panel2 = new JPanel();\
+            JLabel label3 = new JLabel("Enter chef id:");\
+            JTextField chef = new JTextField(10);\
+            panel2.add(label3, BorderLayout.CENTER);\
+            panel2.add(chef, BorderLayout.CENTER);\
+            JButton delete = new JButton("delete chef");\
+            panel2.add(delete, BorderLayout.CENTER);\
+            add(panel2);\
+\
+            JPanel panel3 = new JPanel();\
+            JLabel label4 = new JLabel("Update order: ");\
+            panel3.add(label4, BorderLayout.WEST);\
+            JTextField field2 = new JTextField();\
+            panel3.add(field2, BorderLayout.CENTER);\
+            JButton update = new JButton("save changes");\
+            panel3.add(update, BorderLayout.SOUTH);\
+            add(panel3);\
+\
+            add.addActionListener(new ActionListener() \{\
+                @Override\
+                public void actionPerformed(ActionEvent e) \{\
+                    Connection conn = null;\
+                    Statement stmt = null;\
+\
+                    try \{\
+                        conn = DriverManager.getConnection(url, username, password);\
+                        stmt = conn.createStatement();\
+                        String sql = "INSERT INTO coustomer (coustomer_phone,coustomer_name) VALUES (?,?);";\
+                        PreparedStatement pre = conn.prepareStatement(sql);\
+                        pre.setString(1, name.getText());\
+                        pre.setString(2, phone.getText());\
+                        pre.executeUpdate();\
+                    \} catch (SQLException se) \{\
+                        se.printStackTrace();\
+\
+                    \} catch (Exception ee) \{\
+                        ee.printStackTrace();\
+                    \} finally \{\
+                        try \{\
+                            if (stmt != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                        \}\
+                        try \{\
+                            if (conn != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                            se.printStackTrace();\
+                        \}\
+                    \}\
+                \}\
+            \});\
+\
+            delete.addActionListener(new ActionListener() \{\
+                @Override\
+                public void actionPerformed(ActionEvent e) \{\
+                    Connection conn = null;\
+                    Statement stmt = null;\
+\
+                    try \{\
+                        conn = DriverManager.getConnection(url, username, password);\
+                        stmt = conn.createStatement();\
+                        String sql = "DELETE FROM chef where chef_id=?";\
+                        PreparedStatement pre = conn.prepareStatement(sql);\
+                        pre.setString(1, chef.getText());\
+                        pre.executeUpdate();\
+\
+                    \} catch (SQLException se) \{\
+                        se.printStackTrace();\
+\
+                    \} catch (Exception ee) \{\
+                        ee.printStackTrace();\
+                    \} finally \{\
+                        try \{\
+                            if (stmt != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                        \}\
+                        try \{\
+                            if (conn != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                            se.printStackTrace();\
+                        \}\
+                    \}\
+                \}\
+            \});\
+\
+            update.addActionListener(new ActionListener() \{\
+\
+                @Override\
+                public void actionPerformed(ActionEvent e) \{\
+                    Connection conn = null;\
+                    Statement stmt = null;\
+                    try \{\
+                        conn = DriverManager.getConnection(url, username, password);\
+                        stmt = conn.createStatement();\
+                        String sql = "UPDATE Order "\
+                                + "SET order_id = " + field2.getSelectedText();\
+                        stmt.executeUpdate(sql);\
+\
+                        sql = "SELECT order_id, waiter_id, meal_id FROM Order";\
+                        ResultSet rs = stmt.executeQuery(sql);\
+\
+                        while (rs.next()) \{\
+                            int id = rs.getInt("meal_id");\
+                            int waiter = rs.getInt("waiter_id");\
+\
+                            //Display values\
+                            System.out.print("meal_id: " + id);\
+                            System.out.println("waiter_id: " + waiter);\
+                        \}\
+                        rs.close();\
+\
+                    \} catch (SQLException se) \{\
+\
+                        se.printStackTrace();\
+                    \} finally \{\
+\
+                        try \{\
+                            if (stmt != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                        \}\
+                        try \{\
+                            if (conn != null) \{\
+                                conn.close();\
+                            \}\
+                        \} catch (SQLException se) \{\
+                            se.printStackTrace();\
+                        \}\
+                    \}\
+                \}\
+            \});\
+\
+            try \{\
+                setLayout(new FlowLayout());\
+\
+                String mm[] = new String[10];\
+                String[] save = new String[26];\
+                String sql1 = "select m_id,m_name,price from empsh.meel";\
+                PreparedStatement pre = conn.prepareStatement(sql1);\
+                rs = stmt.executeQuery(sql1);\
+                while (rs.next()) \{\
+                    String mean = rs.getString("m_name");\
+                    int id = rs.getInt("m_id");\
+                    int price = rs.getInt("price");\
+\
+                    if (id == 1000) \{\
+                        mm[1] = mean + "  " + price + "$";\
+                    \}\
+                    if (id == 2000) \{\
+                        mm[2] = mean + "  " + price + "$";\
+                    \}\
+                    if (id == 3000) \{\
+                        mm[3] = mean + "  " + price + "$";\
+                    \}\
+                    if (id == 4000) \{\
+                        mm[4] = mean + "  " + price + "$";\
+                    \}\
+                    if (id == 5000) \{\
+                        mm[5] = mean + "  " + price + "$";\
+                    \}\
+                    if (id == 6000) \{\
+                        mm[6] = mean + "  " + price + "$";\
+                    \}\
+                \}\
+\
+                JPanel panel4 = new JPanel();\
+                JList menu = new JList(mm);\
+                panel4.add(menu, BorderLayout.SOUTH);\
+                JButton addorder = new JButton("add to order");\
+                panel4.add(addorder, BorderLayout.SOUTH);\
+\
+                JTextArea order = new JTextArea(10, 10);\
+                panel4.add(order, BorderLayout.SOUTH);\
+                add(panel3);\
+                addorder.addActionListener(new ActionListener() \{\
+                    public void actionPerformed(ActionEvent e) \{\
+                        String ss = mm[menu.getSelectedIndex()];\
+                        order.append(ss + "\\n");\
+                    \}\
+                \});\
+\
+            \} catch (SQLException se) \{\
+                se.printStackTrace();\
+\
+            \} catch (Exception ee) \{\
+                ee.printStackTrace();\
+            \} finally \{\
+                try \{\
+                    if (stmt != null) \{\
+                        conn.close();\
+                    \}\
+                \} catch (SQLException se) \{\
+                \}\
+                try \{\
+                    if (conn != null) \{\
+                        conn.close();\
+                    \}\
+                \} catch (SQLException se) \{\
+                    se.printStackTrace();\
+                \}\
+            \}\
+\
+        \} catch (SQLException se) \{\
+            //Handle errors for JDBC\
+            se.printStackTrace();\
+        \} catch (Exception e) \{\
+            //Handle errors for Class.forName\
+            e.printStackTrace();\
+        \} finally \{\
+            //finally block used to close resources\
+            try \{\
+                if (stmt != null) \{\
+                    conn.close();\
+                \}\
+            \} catch (SQLException se) \{\
+            \}// do nothing\
+            try \{\
+                if (conn != null) \{\
+                    conn.close();\
+                \}\
+            \} catch (SQLException se) \{\
+                se.printStackTrace();\
+            \}//end finally try\
+        \}//end try\
+\
+    \}\
+\
+    @Override\
+    public void actionPerformed(ActionEvent e) \{\
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.\
+    \}\
+\}\
+}
